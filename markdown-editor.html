@@ -1,0 +1,83 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!-- Paper elements -->
+<link rel="import" href="../paper-input/paper-input-behavior.html">
+<link rel="import" href="../paper-input/paper-input-container.html">
+
+<link rel="import" href="medium-editor-markdown-import.html">
+
+<!--
+`<markdown-editor>` is a Medium.com WYSIWYG editor clone (https://github.com/yabwe/medium-editor#button-options) w/ a Markdown extension (https://github.com/IonicaBizau/medium-editor-markdown)
+
+@demo demo/index.html 
+-->
+
+<dom-module id="markdown-editor">
+
+  <template>
+
+    <style>
+      :host {
+        display: block;
+      }
+      #editor {}
+      #preview {
+        background-color: #ededed;
+      }
+      #preview[hidden] {
+        display: none;
+      }
+    </style>
+
+    <paper-input-container id="editor"
+        always-float-label>
+      <label>description</label>
+      <textarea id="input" is="iron-input"></textarea>
+    </paper-input-container>
+
+    <pre id="preview" hidden="[[!preview]]">[[markdown]]</pre>
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'markdown-editor',
+
+      properties: {
+        markdown: {
+          type: String
+        },
+        /**
+         * Displaying preview of the markdown.
+         */
+        preview: {
+          type: Boolean,
+          reflectToAttribute: true,
+          value: true
+        }
+      },
+
+      behaviors: [
+        Polymer.PaperInputBehavior
+      ],
+
+      ready: function() {
+        new MediumEditor(this.$.input, {
+          extensions: {
+            markdown: new MeMarkdown(function(md) {
+              this.set('markdown', md);
+            }.bind(this))
+          },
+          toolbar: {
+            buttons: ['bold', 'italic', 'anchor', 'h1', 'h2', 'h3', 'quote', 'unorderedlist', 'orderedlist', 'pre'],
+          },
+          targetBlank: true,
+          placeholder: false
+        });
+      }
+
+    });
+  </script>
+
+</dom-module>
