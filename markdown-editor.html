@@ -54,13 +54,13 @@
         preview: {
           type: Boolean,
           reflectToAttribute: true,
-          value: true
+          value: false
         }
       },
 
-      behaviors: [
-        Polymer.PaperInputBehavior
-      ],
+      // behaviors: [
+      //   Polymer.PaperInputBehavior
+      // ],
 
       ready: function() {
         new MediumEditor(this.$.input, {
