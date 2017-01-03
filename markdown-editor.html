@@ -4,11 +4,6 @@
 <link rel="import" href="../paper-input/paper-input-behavior.html">
 <link rel="import" href="../paper-input/paper-input-container.html">
 
-<style>
-  @import 'https://cdn.jsdelivr.net/medium-editor/latest/css/medium-editor.min.css';
-  @import 'https://cdn.jsdelivr.net/medium-editor/latest/css/themes/flat.min.css';
-</style>
-
 <link rel="import" href="medium-editor-markdown-import.html">
 
 <!--
@@ -73,9 +68,11 @@
               this.set('markdown', md);
             }.bind(this))
           },
-          elementsContainer: this.$.editor,
+          elementsContainer: this,
+          contentWindow: window,
+          ownerDocument: this.ownerDocument,
           toolbar: {
-            buttons: ['bold', 'italic', 'anchor', 'h1', 'h2', 'h3', 'quote', 'unorderedlist', 'orderedlist', 'pre'],
+            buttons: ['bold', 'italic', 'anchor', 'h1', 'h2', 'h3', 'quote', 'unorderedlist', 'orderedlist'],
           },
           targetBlank: true,
           placeholder: false
