@@ -16,7 +16,8 @@
 
   <template>
 
-    <style include="editor-styles">
+    <!-- <style include="editor-styles"> -->
+    <style>
       :host {
         display: block;
       }
@@ -68,9 +69,9 @@
               this.set('markdown', md);
             }.bind(this))
           },
-          elementsContainer: this,
-          contentWindow: window,
-          ownerDocument: this.ownerDocument,
+          // elementsContainer: this,
+          // contentWindow: window,
+          // ownerDocument: this.ownerDocument,
           toolbar: {
             buttons: ['bold', 'italic', 'anchor', 'h1', 'h2', 'h3', 'quote', 'unorderedlist', 'orderedlist'],
           },
