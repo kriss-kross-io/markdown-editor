@@ -88,10 +88,30 @@
           // contentWindow: window,
           // ownerDocument: this.ownerDocument,
           toolbar: {
-            buttons: ['bold', 'italic', 'anchor', 'h1', 'h2', 'h3', 'quote', 'unorderedlist', 'orderedlist'],
+            buttons: [
+              'bold',
+              'italic',
+              'anchor',
+              'h1',
+              'h2',
+              'h3',
+              'quote',
+              'unorderedlist',
+              'orderedlist',
+              'removeFormat'
+            ],
           },
           targetBlank: true,
           placeholder: false
+        }).subscribe('editableKeypress', function(event, element) {
+          // console.log(event);
+
+          // cleanse those span tags
+          var spanList = element.getElementsByTagName('span');
+          console.log(spanList);
+          for (var i = 0; i < spanList.length; i++) {
+            spanList[i].outerHTML = spanList[i].innerHTML;
+          };
         });
       },
 
