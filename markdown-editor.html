@@ -82,7 +82,13 @@
                 // console.log(md);
                 this.set('markdown', md);
               }
-            }.bind(this))
+            }.bind(this)),
+            code: new MediumEditorPhrase({
+              name: 'code',
+              aria: 'codeblock',
+              contentDefault: '< />',
+              phraseTagName: 'code'
+            })
           },
           // elementsContainer: this,
           // contentWindow: window,
@@ -92,6 +98,8 @@
               'bold',
               'italic',
               'anchor',
+              'code',
+              'code',
               'h1',
               'h2',
               'h3',
@@ -108,7 +116,7 @@
 
           // cleanse those span tags
           var spanList = element.getElementsByTagName('span');
-          console.log(spanList);
+          // console.log(spanList);
           for (var i = 0; i < spanList.length; i++) {
             spanList[i].outerHTML = spanList[i].innerHTML;
           };

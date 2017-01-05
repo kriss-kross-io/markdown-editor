@@ -4,6 +4,7 @@
   "dependencies": {
     "marked-element": "PolymerElements/marked-element#^1.2.0",
     "medium-editor-markdown": "IonicaBizau/medium-editor-markdown#^2.6.1",
+    "medium-editor-phrase": "nymag/medium-editor-phrase",
     "paper-input": "PolymerElements/paper-input#^1.1.22",
     "polymer": "Polymer/polymer#^1.4.0"
   },
