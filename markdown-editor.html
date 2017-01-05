@@ -7,6 +7,7 @@
 <!-- Molecule elements -->
 <link rel="import" href="../marked-element/marked-element.html">
 
+<!-- Custom elements -->
 <link rel="import" href="medium-editor-markdown-import.html">
 
 <!--
@@ -19,7 +20,6 @@
 
   <template>
 
-    <!-- <style include="editor-styles"> -->
     <style>
       :host {
         display: block;
@@ -70,10 +70,6 @@
         }
       },
 
-      // behaviors: [
-      //   Polymer.PaperInputBehavior
-      // ],
-
       ready: function() {
         new MediumEditor(this.$.input, {
           extensions: {
@@ -90,15 +86,11 @@
               phraseTagName: 'code'
             })
           },
-          // elementsContainer: this,
-          // contentWindow: window,
-          // ownerDocument: this.ownerDocument,
           toolbar: {
             buttons: [
               'bold',
               'italic',
               'anchor',
-              'code',
               'code',
               'h1',
               'h2',
@@ -112,11 +104,8 @@
           targetBlank: true,
           placeholder: false
         }).subscribe('editableKeypress', function(event, element) {
-          // console.log(event);
-
           // cleanse those span tags
           var spanList = element.getElementsByTagName('span');
-          // console.log(spanList);
           for (var i = 0; i < spanList.length; i++) {
             spanList[i].outerHTML = spanList[i].innerHTML;
           };
@@ -132,7 +121,6 @@
       },
 
       _renderComplete: function(event) {
-        // console.log('_renderComplete:\n%O', event);
         this.set('_initRender', true);
       }
 
