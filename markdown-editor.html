@@ -4,6 +4,9 @@
 <link rel="import" href="../paper-input/paper-input-behavior.html">
 <link rel="import" href="../paper-input/paper-input-container.html">
 
+<!-- Molecule elements -->
+<link rel="import" href="../marked-element/marked-element.html">
+
 <link rel="import" href="medium-editor-markdown-import.html">
 
 <!--
@@ -32,8 +35,12 @@
     <paper-input-container id="editor"
         always-float-label>
       <label>description</label>
-      <textarea id="input" is="iron-input"></textarea>
+      <marked-element id="marked" class="paper-input-input"
+          on-marked-render-complete="_renderComplete">
+        <div id="input" class="markdown-html" is="iron-input"></div>
+      </marked-element>
     </paper-input-container>
+
 
     <pre id="preview" hidden="[[!preview]]">[[markdown]]</pre>
 
@@ -46,7 +53,8 @@
 
       properties: {
         markdown: {
-          type: String
+          type: String,
+          value: null
         },
         /**
          * Displaying preview of the markdown.
@@ -54,6 +62,10 @@
         preview: {
           type: Boolean,
           reflectToAttribute: true,
+          value: false
+        },
+        _initRender: {
+          type: Boolean,
           value: false
         }
       },
@@ -66,7 +78,10 @@
         new MediumEditor(this.$.input, {
           extensions: {
             markdown: new MeMarkdown(function(md) {
-              this.set('markdown', md);
+              if (this._initRender) {
+                // console.log(md);
+                this.set('markdown', md);
+              }
             }.bind(this))
           },
           // elementsContainer: this,
@@ -78,6 +93,19 @@
           targetBlank: true,
           placeholder: false
         });
+      },
+
+      attached: function() {
+        if (this.markdown) {
+          this.$.marked.markdown = this.markdown;
+        } else {
+          this.set('_initRender', true);
+        }
+      },
+
+      _renderComplete: function(event) {
+        // console.log('_renderComplete:\n%O', event);
+        this.set('_initRender', true);
       }
 
     });
