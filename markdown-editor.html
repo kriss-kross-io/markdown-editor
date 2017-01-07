@@ -35,8 +35,7 @@
     <paper-input-container id="editor"
         always-float-label>
       <label>description</label>
-      <marked-element id="marked" class="paper-input-input"
-          on-marked-render-complete="_renderComplete">
+      <marked-element id="marked" class="paper-input-input">
         <div id="input" class="markdown-html" is="iron-input"></div>
       </marked-element>
     </paper-input-container>
@@ -54,7 +53,8 @@
       properties: {
         markdown: {
           type: String,
-          value: null
+          notify: true,
+          observer: '_markdownChanged'
         },
         /**
          * Displaying preview of the markdown.
@@ -74,10 +74,8 @@
         new MediumEditor(this.$.input, {
           extensions: {
             markdown: new MeMarkdown(function(md) {
-              if (this._initRender) {
-                // console.log(md);
-                this.set('markdown', md);
-              }
+              // console.log('md:\n%O', md);
+              this.set('markdown', md);
             }.bind(this)),
             code: new MediumEditorPhrase({
               name: 'code',
@@ -112,16 +110,16 @@
         });
       },
 
-      attached: function() {
-        if (this.markdown) {
-          this.$.marked.markdown = this.markdown;
-        } else {
-          this.set('_initRender', true);
+      _markdownChanged: function(markdown) {
+        // console.log('_markdownChanged:\n%O', markdown);
+
+        if (!this.$.marked.markdown && markdown) {
+          this.$.marked.markdown = markdown;
         }
       },
 
-      _renderComplete: function(event) {
-        this.set('_initRender', true);
+      reset: function() {
+        this.$.marked.markdown = null;
       }
 
     });
