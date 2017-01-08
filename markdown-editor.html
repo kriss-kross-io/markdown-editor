@@ -53,8 +53,7 @@
       properties: {
         markdown: {
           type: String,
-          notify: true,
-          observer: '_markdownChanged'
+          notify: true
         },
         /**
          * Displaying preview of the markdown.
@@ -62,10 +61,6 @@
         preview: {
           type: Boolean,
           reflectToAttribute: true,
-          value: false
-        },
-        _initRender: {
-          type: Boolean,
           value: false
         }
       },
@@ -110,16 +105,8 @@
         });
       },
 
-      _markdownChanged: function(markdown) {
-        // console.log('_markdownChanged:\n%O', markdown);
-
-        if (!this.$.marked.markdown && markdown) {
-          this.$.marked.markdown = markdown;
-        }
-      },
-
-      reset: function() {
-        this.$.marked.markdown = null;
+      renderMarkdown: function() {
+        this.$.marked.markdown = this.markdown;
       }
 
     });
