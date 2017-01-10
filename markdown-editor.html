@@ -53,12 +53,15 @@
       is: 'markdown-editor',
 
       properties: {
+        /**
+         * The markdown to be rendered
+         */
         markdown: {
           type: String,
           notify: true
         },
         /**
-         * Displaying preview of the markdown.
+         * Displaying a preview of the markdown when true
          */
         preview: {
           type: Boolean,
@@ -109,6 +112,9 @@
         });
       },
 
+      /**
+       * Applies the markdown property to `marked-element`
+       */
       renderMarkdown: function() {
         this.$.marked.markdown = this.markdown;
       }
