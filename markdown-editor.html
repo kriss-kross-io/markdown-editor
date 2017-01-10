@@ -10,6 +10,8 @@
 <!-- Custom elements -->
 <link rel="import" href="medium-editor-markdown-import.html">
 
+<link rel="import" href="../demo-content/shared-markdown-styles.html">
+
 <!--
 `<markdown-editor>` is a Medium.com WYSIWYG editor clone (https://github.com/yabwe/medium-editor#button-options) w/ a Markdown extension (https://github.com/IonicaBizau/medium-editor-markdown)
 
@@ -20,7 +22,7 @@
 
   <template>
 
-    <style>
+    <style include="shared-markdown-styles">
       :host {
         display: block;
       }
@@ -66,6 +68,8 @@
       },
 
       ready: function() {
+        this.renderMarkdown();
+
         new MediumEditor(this.$.input, {
           extensions: {
             markdown: new MeMarkdown(function(md) {
