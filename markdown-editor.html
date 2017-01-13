@@ -114,9 +114,11 @@
       },
 
       /**
-       * Applies the markdown property to `marked-element`
+       * Resets the input and applies the markdown property to `marked-element`
        */
       renderMarkdown: function() {
+        this.$.input.innerHTML = null;
+
         this.$.marked.markdown = this.markdown;
       }
 
