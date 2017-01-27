@@ -79,20 +79,13 @@
             markdown: new MeMarkdown(function(md) {
               // console.log('md:\n%O', md);
               this.set('markdown', md);
-            }.bind(this)),
-            code: new MediumEditorPhrase({
-              name: 'code',
-              aria: 'codeblock',
-              contentDefault: '< />',
-              phraseTagName: 'code'
-            })
+            }.bind(this))
           },
           toolbar: {
             buttons: [
               'bold',
               'italic',
               'anchor',
-              'code',
               'h1',
               'h2',
               'h3',
