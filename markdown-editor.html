@@ -94,7 +94,14 @@
               'orderedlist',
               'removeFormat'
             ],
+            static: true,
+            sticky: true
           },
+          paste: {
+            forcePlainText: true
+          },
+          disableExtraSpaces: true,
+          buttonLabels: 'fontawesome',
           targetBlank: true,
           placeholder: false
         }).subscribe('editableKeypress', function(event, element) {
