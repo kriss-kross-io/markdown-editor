@@ -4,6 +4,9 @@
 <link rel="import" href="../paper-input/paper-input-behavior.html">
 <link rel="import" href="../paper-input/paper-input-container.html">
 
+<!-- Iron elements -->
+<link rel="import" href="../iron-media-query/iron-media-query.html">
+
 <!-- Molecule elements -->
 <link rel="import" href="../marked-element/marked-element.html">
 
@@ -26,6 +29,12 @@
       :host {
         display: block;
       }
+      /*TODO: fix missing styling*/
+      /*:host ::content .markdown-html blockquote {
+        padding: 0 1em;
+        color: #777;
+        border-left: 0.25em solid #ddd;
+      }*/
       #preview {
         background-color: #ededed;
         overflow-x: scroll;
@@ -34,6 +43,8 @@
         display: none;
       }
     </style>
+
+    <iron-media-query query="max-width: 600px" query-matches="{{_smallScreen}}"></iron-media-query>
 
     <paper-input-container id="editor"
         always-float-label>
@@ -55,6 +66,28 @@
 
       properties: {
         /**
+         * Instance of MediumEditor class
+         */
+        editor: {
+          type: Object,
+          readOnly: true,
+          observer: '_editorChanged'
+        },
+        /**
+         * Custom placeholder text shown in the editor window
+         */
+        placeholderText: {
+          type: String,
+          value: null
+        },
+        /**
+         * Hides the placeholder upon clicking the text editor when true
+         */
+        placeholderHide: {
+          type: Boolean,
+          value: true
+        },
+        /**
          * The markdown to be rendered
          */
         markdown: {
@@ -68,57 +101,119 @@
           type: Boolean,
           reflectToAttribute: true,
           value: false
+        },
+        _smallScreen: {
+          type: Boolean
         }
       },
 
-      ready: function() {
-        this.renderMarkdown();
+      ready: function () {
+        this._initializeEditor();
+      },
 
-        new MediumEditor(this.$.input, {
-          extensions: {
-            markdown: new MeMarkdown(function(md) {
-              // console.log('md:\n%O', md);
-              this.set('markdown', md);
-            }.bind(this))
-          },
-          toolbar: {
-            buttons: [
-              'bold',
-              'italic',
-              'anchor',
-              'h1',
-              'h2',
-              'h3',
-              'quote',
-              'unorderedlist',
-              'orderedlist',
-              'removeFormat'
-            ],
-            static: true,
-            sticky: true
-          },
-          paste: {
-            forcePlainText: true
-          },
-          disableExtraSpaces: true,
-          buttonLabels: 'fontawesome',
-          targetBlank: true,
-          placeholder: false
-        }).subscribe('editableKeypress', function(event, element) {
-          // cleanse those span tags
-          var spanList = element.getElementsByTagName('span');
-          for (var i = 0; i < spanList.length; i++) {
-            spanList[i].outerHTML = spanList[i].innerHTML;
-          };
-        });
+      _initializeEditor: function () {
+        if (this.editor) {
+          this.editor.destroy();
+          this._setEditor(null);
+        }
+        this._setEditor(new MediumEditor(this.$.input, this._buildOptions()));
+
+        // cleaning span tags
+        this.editor.subscribe('editableInput', this._handleEditableInput.bind(this));
+      },
+
+      _buildOptions: function () {
+        var options = {};
+
+        options['disableExtraSpaces'] =  true;
+        options['buttonLabels'] =  'fontawesome';
+        options['targetBlank'] =  true;
+
+        // TOOLBAR
+        var toolbarOptions = {};
+        toolbarOptions['buttons'] = [
+          'bold',
+          'italic',
+          'anchor',
+          'h1',
+          'h2',
+          'h3',
+          'quote',
+          'unorderedlist',
+          'orderedlist',
+          'removeFormat'
+        ];
+        if (this._smallScreen) {
+          toolbarOptions['static'] = true;
+          toolbarOptions['sticky'] = true;
+        }
+        options['toolbar'] = toolbarOptions;
+
+        // PASTE
+        var pasteOptions = {};
+        pasteOptions['forcePlainText'] = true;
+        options['paste'] = pasteOptions;
+
+        // PLACEHOLDER
+        placeholderOptions = {};
+        if (this.placeholderText) {
+          if (this.placeholderText) {
+            placeholderOptions['text'] = this.placeholderText;
+          }
+          if (this.placeholderHide) {
+            placeholderOptions['hideOnClick'] = this.placeholderHide;
+          }
+        }
+        options['placeholder'] = placeholderOptions;
+
+        // EXTENSIONS
+        var extensionOptions = {};
+        extensionOptions['markdown'] = new MeMarkdown({
+          events: [
+            'input',
+            'change',
+            'click',
+            'focus'
+          ]
+        }, function(markdown) {
+          this._handleOutput(markdown);
+        }.bind(this));
+        options['extensions'] = extensionOptions;
+
+        return options;
+      },
+
+      _handleEditableInput: function (event, element) {
+        // clean those span tags
+        var spanList = element.getElementsByTagName('span');
+        for (var i = 0; i < spanList.length; i++) {
+          spanList[i].outerHTML = spanList[i].innerHTML;
+        };
+      },
+
+      _handleOutput: function (md) {
+        if (this._editorReady) {
+          // console.log('md:\n"%s"', md);
+          this.set('markdown', md);
+        }
+      },
+
+      _editorChanged: function(editor) {
+        if (editor) {
+          this.renderMarkdown();
+          this.set('_editorReady', true);
+
+          if (this.markdown) {
+            this.editor.trigger('focus', {}, this.$.input);
+          }
+        }
       },
 
       /**
-       * Resets the input and applies the markdown property to `marked-element`
+       * Applies the markdown property to `marked-element`
        */
       renderMarkdown: function() {
-        this.$.input.innerHTML = null;
-
+        // console.log('renderMarkdown: %s', this.markdown);
         this.$.marked.markdown = this.markdown;
       }
 
