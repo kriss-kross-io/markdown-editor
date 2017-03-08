@@ -202,10 +202,6 @@
         if (editor) {
           this.renderMarkdown();
           this.set('_editorReady', true);
-
-          if (this.markdown) {
-            this.editor.trigger('focus', {}, this.$.input);
-          }
         }
       },
 
@@ -214,6 +210,13 @@
        */
       renderMarkdown: function() {
         // console.log('renderMarkdown: %s', this.markdown);
+
+        if (this.markdown) {
+          this.editor.trigger('focus', {}, this.$.input);
+        } else {
+          this.editor.trigger('blur', {}, this.$.input);
+        }
+
         this.$.marked.markdown = this.markdown;
       }
 
